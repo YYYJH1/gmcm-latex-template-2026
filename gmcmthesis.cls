@@ -3,9 +3,13 @@
 % created by latexstudio.net
 % update by andy123t
 %
+% 2026 adaptation (the 23rd GMCM): cover/abstract page re-calibrated against the
+% official 2026 Word template, bug fixes and other changes by YYYJH1.
+% Upstream: https://github.com/latexstudio/GMCMthesis
+%
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{gmcmthesis}[2023/09/19 v2.4 update by andy123t]
+\ProvidesClass{gmcmthesis}[2026/09/22 v2.4-2026 (based on v2.4 by andy123t)]
 %% Inital Code
 \newif\if@gmcm@bwprint\@gmcm@bwprintfalse
 \newif\if@gmcm@preface\@gmcm@prefacetrue
@@ -125,8 +129,6 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
   backgroundcolor=\color{gray!5},%\color{pBackground}, % choose the background color
   rulecolor=\color{gray!50},
   title=#1,                            % \lstnames how the filename of files
-  emph={format_string,eff_ana_bf,permute,eff_ana_btr},
-  emphstyle=\color{pIdentifier}
   showspaces=false,                    % show spaces adding particular underscores
   showstringspaces=false,              % underline spaces within strings
   showtabs=false,                      % show tabs within strings adding particular underscores
@@ -135,6 +137,10 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
   breaklines=true,                     % sets automatic line breaking
 }}{}
 
+% 全局 \lstset 用到的两个颜色（原模板把定义注释掉了，附录代码一有注释或字符串就报 Undefined color）
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\AtEndOfClass{\renewcommand{\lstlistingname}{代码}}
 \lstset{
   frame=tb,
   xleftmargin=25pt,
@@ -208,13 +214,22 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \RequirePackage{hyperref}
 %% Document Layout
 % 页面布局
-\geometry{top=30.0mm,bottom=25.0mm,left=22.5mm,right=22.5mm,headsep=8mm}
-\renewcommand*{\baselinestretch}{1.38}
+\geometry{top=30.0mm,bottom=25.0mm,left=22.5mm,right=22.5mm,headsep=8mm,footskip=19.4pt}
+%% ---------------------------------------------------------------------
+%% 行距：附件2 规定「行距用单倍行距」。
+%% Word 的小四(12pt)宋体单倍行距 ≈ 15.6pt 基线距。
+%% LaTeX 在 12pt 下 \baselineskip 默认 14.4pt，故 15.6/14.4 = 1.083。
+%% 原模板用 1.38（= 19.87pt，比 Word 单倍行距松 27%），不符合「单倍行距」。
+%% 想恢复原模板的宽松版式（页数会变多），把下面一行换成 1.38 即可。
+\renewcommand*{\baselinestretch}{1.0833}  % 单倍行距，对齐 Word；原模板为 1.38
+%% ---------------------------------------------------------------------
 % 修改tabular 环境, 设置表格中的行间距为正文行间距.
 \let\gmcm@oldtabular\tabular
 \let\gmcm@endoldtabular\endtabular
 \renewenvironment{tabular}%
 	{\bgroup%
+	%% 表格行高保持 1.38：这是表格观感，不必跟着正文行距走。
+	%% （官方封面「学校/参赛队号/队员姓名」那张表就需要这个行高才对得上）
 	\renewcommand{\arraystretch}{1.38}%
 	\gmcm@oldtabular}%
 	{\gmcm@endoldtabular\egroup}
@@ -316,11 +331,15 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
     \ifmcm@fandol
       % \setCJKfamilyfont{zhli}{LiSu} % 需要隶书字体 最好更换其他相似字体
       % \newcommand*\lishu{\CJKfamily{zhli}}
-      \providecommand{\lishu}{\kaishu}
       \PackageWarning{heavenlyclouds}{用楷书代替隶书}
     \fi
   \fi
 \fi
+%% \lishu 兜底：原模板只在 mac/windows/fandol 三个分支里定义它。若 ctex 的
+%% fontset 是别的值（例如 fontset=ubuntu），\lishu 就没有定义，而封面的
+%% 「题 目：」和摘要标题都要用它 —— 会直接编译失败。
+%% \providecommand 不覆盖上面各分支已定义的版本，放这里最安全。
+\providecommand{\lishu}{\kaishu}
 
 % \ifmcm@windows
 %   \setCJKfamilyfont{xw}{STXinwei}
@@ -409,7 +428,16 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 		 bookmarksopen=true,
  		 bookmarksopenlevel=0,
 		 allcolors=black,
-		 breaklinks=true}%
+		 breaklinks=true,
+		 %% —— 防止 PDF 元数据泄露身份信息 ——
+		 %% 规范：除首页外不得出现单位/姓名/队号。hyperref 默认会把 \title
+		 %% 写进 PDF 的 Info 字典，评委在「文档属性」里一看就有。全部清空。
+		 pdftitle={},
+		 pdfauthor={},
+		 pdfsubject={},
+		 pdfkeywords={},
+		 pdfcreator={},
+		 pdfproducer={}}%
 % }
 % \if@gmcm@bwprint
 % \AtBeginDocument{\hypersetup{hidelinks}}
@@ -426,6 +454,23 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \g@addto@macro{\UrlBreaks}{\UrlAlphabet}
 \g@addto@macro{\UrlBreaks}{\UrlDigits}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% 页码字体：官方模板实测为 Times New Roman 9.00pt，居中于页脚。
+%% 原模板用正文字号(12pt)，偏大。本机装有 msttcorefonts，能取到真 Times New Roman。
+\IfFontExistsTF{Times New Roman}{%
+  \newfontfamily\gmcm@pagefont{Times New Roman}%
+}{%
+  \let\gmcm@pagefont\relax
+}
+\renewcommand{\ps@plain}{%
+  \let\@mkboth\@gobbletwo
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \def\@oddfoot{\hfil{\gmcm@pagefont\fontsize{9}{11}\selectfont\thepage}\hfil}%
+  \let\@evenfoot\@oddfoot
+}
+%% 全文固定 plain：ctex 的中文 article 方案默认 \pagestyle{headings}，摘要写满两页时第二页页码会跑到右上角成了页眉
+\pagestyle{plain}
 
 %% Document Markup
 
@@ -452,59 +497,71 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
   \clearpage
   %\thispagestyle{plain}%
   \thispagestyle{empty}
+  \pagenumbering{roman}% 封面在阅读器里标为 i，摘要页才是 1
   \pdfbookmark[1]{封~面}{cover}
   \if@gmcm@preface
   %\setcounter{page}{0}
   %\def\thepage{0}
 
  \begin{center}
- {\includegraphics{logo}}
+ {\gmcm@logo@row}
 
-  \vskip1.5cm
+  %% logo 行 → 抬头首行基线：官方实测 224.30pt（页顶起），此处标定过
+  \vskip38.02pt
  {\zihao{2} \gmcm@ges@string@contents \par}
  \end{center}
 
- \vskip4em
+ %% 抬头 → 封面表格第一行基线：官方实测 381.17pt，此处标定过
+ \vskip4em\vskip13.20pt
 
  % \thispagestyle{gmcmheadings}
  \renewcommand\arraystretch{1.5}
  %\noindent 
+ %% 官方模板 PDF span 实测：「学 校」「参赛队号」「队员姓名」三个标签均为
+ %% SimSun 18.00pt 且【不加粗】（flags=4，无 bold 位）；序号 1./2./3. 才是粗体。
+ %% 原模板对标签和取值都加了 \bfseries，与官方不一致，这里去掉。
  \begin{tabularx}{\textwidth-40pt}{lX}
-  \zihao{-2}\bfseries 学\qquad 校&\zihao{-2}\bfseries\gmcm@tokens@schoolname\\
-  \Xhline{1.2pt}\\
-  \zihao{-2}\bfseries 参赛队号&\zihao{-2}\bfseries\gmcm@tokens@baominghao\\
+  \zihao{-2} 学\qquad 校&\zihao{-2}\gmcm@tokens@schoolname\\
+  %% [10.2pt] 用来补足行距：官方「学校」→「参赛队号」基线间距实测 58.20pt。
+  %% 原模板靠 \baselinestretch 撑开，正文行距改成单倍后这里会塌，所以显式补。
+  \Xhline{1.2pt}\\[10.2pt]
+  \zihao{-2} 参赛队号&\zihao{-2}\gmcm@tokens@baominghao\\
   \Xhline{1.2pt}\\[-15pt]
-   \multirow{3}{*}{\zihao{-2}\bfseries 队员姓名}&\zihao{-2}\bfseries   1. \gmcm@tokens@membera\hfill\null\\
+   \multirow{3}{*}{\zihao{-2} 队员姓名}&\zihao{-2}{\bfseries 1.} \gmcm@tokens@membera\hfill\null\\
    \cline{2-2}\\[-15pt]
-                               &\zihao{-2}\bfseries 2. \gmcm@tokens@memberb\hfill\null\\
+                               &\zihao{-2}{\bfseries 2.} \gmcm@tokens@memberb\hfill\null\\
    \cline{2-2}\\[-15pt]
-                        &\zihao{-2}\bfseries 3.  \gmcm@tokens@memberc\hfill\null\\
+                        &\zihao{-2}{\bfseries 3.} \gmcm@tokens@memberc\hfill\null\\
    \Xhline{1.2pt}
   \end{tabularx}
 
 	\makenametitle
+	\fi          % ← 补上 \if@gmcm@preface 缺失的 \fi（原模板遗漏；日志里的
+	             %   "(\end occurred when \iftrue ... was incomplete)" 就是它）
 	}
 
 \def\makenametitle{
 \clearpage
 \thispagestyle{plain}%
 \pdfbookmark[1]{标~题}{title}
+\pagenumbering{arabic}%
 \setcounter{page}{1}
+%% 以下三处间距均按官方模板 PDF 实测标定：
+%%   抬头首行基线 106.34pt、「题 目：」基线 231.98pt、「摘 要：」基线 294.41pt
 \begin{center}
-%{\includegraphics[width=4cm]{logo}}
 {\zihao{2} \gmcm@ges@string@contents \par}
 \end{center}
 
-\vskip0.6cm%
+\vskip0.6cm\vskip18.87pt%
 
 \begin{center}
-\begin{tabularx}{.95\textwidth}{@{}lX@{}}
-{\zihao{-2}\lishu 题\quad 目: } &\hfill\zihao{3}\heiti \@title\hfill\null\\
+\begin{tabularx}{\textwidth}{@{}l>{\centering\arraybackslash}X@{}}
+{\zihao{-2}\lishu 题\quad 目：} &\zihao{3}\heiti \@title\\
 \cline{2-2}
 \end{tabularx}
 \end{center}
 
-\vskip0.2cm%
+\vskip0.2cm\vskip22.53pt%
 }
 
 
@@ -565,7 +622,9 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 	\renewcommand{\gmcm@tokens@keywords}{#1}
 	\par
 	\vskip1ex
-	{\noindent\zihao{-3}\lishu\gmcm@cap@keywordsname：}~{\gmcm@tokens@keywords}
+	%% 官方模板实测「题 目：」「摘 要：」「关键词：」三个标签同为小二(18pt)，
+	%% 原模板这里误用 \zihao{-3}(15pt)，与前两者不齐。
+	{\noindent\zihao{-2}\lishu\gmcm@cap@keywordsname：}~{\gmcm@tokens@keywords}
 	}
 
 
@@ -604,12 +663,104 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 
 % 常量
 
-%\newcommand\gmcm@ges@string@contents{“华为杯”第十五届全国研究生\par 数学建模竞赛}
-\newcommand\gmcm@ges@string@contents{\includegraphics{title}}
+%% =====================================================================
+%%  封面抬头 与 四枚 logo  ——  2026（第二十三届）版
+%% ---------------------------------------------------------------------
+%%  原模板的 figures/title.pdf 与 figures/logo.pdf 是第二十一届的烘焙图，
+%%  里面写死了“第二十一届”和山东大学校徽，本届（承办方为西安交通大学）必须重做。
+%%  这里改成：文字用 LaTeX 真实排版（可搜索、可改届数），
+%%           四枚 logo 直接用从官方 附件3 模板里原样提取的图片。
+%%
+%%  ⚠ 通知规定「4个logo图标不能替换」。figures/logos/ 下的四个文件是
+%%    直接从官方 .doc 的 Data 流中原样提取的，未经任何修改，请勿替换。
+%% =====================================================================
+
+%% —— 届数：唯一需要改的地方 ——
+\newcommand*\gmcm@jieshu{第二十三届}
+
+%% —— 抬头字体 ——
+%% 官方 Word 模板用的是 华文新魏(STXinwei)，属 Windows/Office 字体，
+%% Linux/TeXLive 一般没有，本机也确实没有（fc-list 查无）。
+%% 这里按可用性依次退让：华文新魏 → 楷体(加粗模拟) → 楷体。
+%% 三者都是书法/楷书风格，与官方封面的观感最接近。
+%% 若想换成更常见的黑体封面，把 \gmcmcoverfont 定义成 \heiti\bfseries 即可。
+%% 降级链：系统装的华文新魏 → 项目自带的 STXINWEI.TTF → 隶书 → 文鼎中楷 → Fandol 楷体
+%% 想 100% 还原官方封面：找队友从 Windows 的 C:\Windows\Fonts\STXINWEI.TTF
+%% 拷一份放进本目录的 fonts/ 下即可，源码换机也能保持一致。
+\IfFontExistsTF{STXinwei}{%
+  \setCJKfamilyfont{gmcmcover}{STXinwei}%
+  \newcommand\gmcmcoverfont{\CJKfamily{gmcmcover}}%
+}{%
+\IfFontExistsTF{fonts/STXINWEI.TTF}{%
+  \setCJKfamilyfont{gmcmcover}[Path=fonts/]{STXINWEI.TTF}%
+  \newcommand\gmcmcoverfont{\CJKfamily{gmcmcover}}%
+}{%
+\IfFontExistsTF{LiSu}{%
+  \setCJKfamilyfont{gmcmcover}[AutoFakeBold=2.5]{LiSu}%
+  \newcommand\gmcmcoverfont{\CJKfamily{gmcmcover}\bfseries}%
+}{%
+\IfFontExistsTF{AR PL KaitiM GB}{%
+  \setCJKfamilyfont{gmcmcover}[AutoFakeBold=2.5]{AR PL KaitiM GB}%
+  \newcommand\gmcmcoverfont{\CJKfamily{gmcmcover}\bfseries}%
+}{%
+\IfFontExistsTF{FandolKai-Regular.otf}{%
+  % Fandol Kai 没有粗体字重，用 AutoFakeBold 模拟官方封面的笔画厚度
+  \setCJKfamilyfont{gmcmcover}[AutoFakeBold=2.5]{FandolKai-Regular.otf}%
+  \newcommand\gmcmcoverfont{\CJKfamily{gmcmcover}\bfseries}%
+}{%
+  \newcommand\gmcmcoverfont{\kaishu}%
+}}}}}
+
+%% 字号取自官方模板 PDF 的 span 实测：
+%%   第 1 行「中国研究生创新实践系列大赛」 STXinwei 18.00pt  → \zihao{-2}(18.07pt)
+%%   第 2、3 行                          STXinwei 21.96pt → \zihao{2} (22.08pt)
+%% 原模板把三行统一成 \zihao{2}，第 1 行偏大。
+%% 字号与基线间距全部取自官方模板 PDF 的 span 实测：
+%%   第 1 行 18.00pt；第 2、3 行 21.96pt
+%%   基线间距 第1→2 行 32.52pt，第2→3 行 31.20pt
+\newcommand\gmcm@ges@string@contents{%
+  \begingroup
+  \gmcmcoverfont
+  \renewcommand*{\baselinestretch}{1}%  否则正文行距倍数会把下面的基线间距再乘一遍
+  {\fontsize{18}{22}\selectfont 中国研究生创新实践系列大赛\par}
+  {\fontsize{21.96}{32.52}\selectfont “华为杯”\gmcm@jieshu 中国研究生\par}
+  {\fontsize{21.96}{31.20}\selectfont 数学建模竞赛\par}
+  \endgroup}
+
+%% —— 四枚 logo 一行 ——
+%% 顺序与尺寸均来自对官方 附件3 (.doc) 的二进制解析：
+%% 逐个图片占位符按 CP 顺序取 sprmCPicLocation(0x6A03) 得到 fcPic，
+%% 再读 PICF 的 dxaGoal/dyaGoal 与 mx/my 缩放，得到实际显示尺寸。
+%% 解析器已在第二十一届模板上验证，能复现其已知版面
+%% （CPIPC / 数模会徽 / HUAWEI / 山东大学）。
+%%
+%% 本届（第二十三届）文档顺序与显示尺寸：
+%%   #1 CPIPC        cp=0    3.615 x 2.302 cm
+%%   #2 数模会徽      cp=2    2.762 x 2.656 cm
+%%   #3 HUAWEI 竖版   cp=181  2.804 x 2.804 cm
+%%   #4 西安交通大学   cp=184  2.410 x 2.276 cm
+%%
+%% ⚠ 注意第 4 枚：官方在 Word 里对那张 2935x786 的横版 banner 设了
+%%   cropFromRight = 0.7155，即**只显示左侧 28.45%（仅校徽，不含校名文字）**。
+%%   logos/03_xjtu_crest.png 就是按这个比例裁出来的（835x786），
+%%   未裁切的原图保留为 03_xjtu_full_原始未裁切.png 以备存证。
+%%   四枚 logo 高度并不相同，这里按官方实测值逐个给定，不要改成统一高度。
+\newcommand\gmcm@logo@row{%
+  \begingroup
+  \includegraphics[width=3.615cm,height=2.302cm]{logos/01_cpipc}\hspace{5mm}%
+  \includegraphics[width=2.762cm,height=2.656cm]{logos/02_gmcm}\hspace{5mm}%
+  \includegraphics[width=2.804cm,height=2.804cm]{logos/04_huawei}\hspace{5mm}%
+  \includegraphics[width=2.410cm,height=2.276cm]{logos/03_xjtu_crest}%
+  \endgroup}
 
 \renewcommand{\thetable}{\arabic{section}.\arabic{table}}
 \renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
 \renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
+%% 原模板只改了编号「格式」，没让计数器随节复位：
+%% 第 2 节的第一张图会编成「2.4」而不是「2.1」。\numberwithin 同时管格式和复位。
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
 
 % 字图与子标题
 % \RequirePackage{subcaption}

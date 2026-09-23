@@ -1,2 +1,15 @@
-
-GMCMthesis.zip
+build/
+missfont.log
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+.DS_Store
+fonts/*.TTF
+fonts/*.ttf

@@ -1,0 +1,34 @@
+% ============================================================
+%  figures/title.pdf —— 第二十三届(2026) 封面/摘要页抬头
+%  直接替换原模板的 figures/title.pdf，gmcmthesis.cls 无需改动。
+%
+%  画布固定为 318.64 × 86.81 pt，与原 title.pdf 完全一致，
+%  所以封面和摘要页的版式不会有任何位移。
+%
+%  字号取自官方模板 PDF 的 span 实测：
+%     第 1 行 18.00 pt，第 2、3 行 21.96 pt
+%  字体：官方用 华文新魏(STXinwei)，Linux 无此字体，此处用楷体(加粗模拟)。
+%        若本机有华文新魏，把 \coverfont 换成 \setCJKmainfont{STXinwei} 即可。
+%
+%  改届数：只改下面 \jieshu 一处。
+%  编译：xelatex title.tex
+% ============================================================
+\documentclass[border=0pt]{standalone}
+\usepackage{ctex}
+
+\newcommand\jieshu{第二十三届}
+
+% 抬头字体：华文新魏 → 隶书 → 文鼎中楷 → Fandol 楷体
+\IfFontExistsTF{STXinwei}{\setCJKmainfont{STXinwei}}{%
+\IfFontExistsTF{LiSu}{\setCJKmainfont[AutoFakeBold=2.5]{LiSu}}{%
+\IfFontExistsTF{AR PL KaitiM GB}{\setCJKmainfont[AutoFakeBold=2.5]{AR PL KaitiM GB}}{%
+\setCJKmainfont[AutoFakeBold=2.5]{FandolKai-Regular.otf}}}}
+
+\begin{document}%
+\begin{minipage}{318.64pt}%
+\centering\bfseries
+{\fontsize{18}{24.5}\selectfont 中国研究生创新实践系列大赛\par}
+{\fontsize{21.96}{27.5}\selectfont “华为杯”\jieshu 中国研究生\par}
+{\fontsize{21.96}{27.5}\selectfont 数学建模竞赛\par}
+\end{minipage}%
+\end{document}

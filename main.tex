@@ -1,0 +1,87 @@
+% !Mode:: "TeX:UTF-8"
+% !TEX program = xelatex
+% =====================================================================
+%  “华为杯”第二十三届中国研究生数学建模竞赛  参赛论文
+%  2026
+%
+%  编译:  ./build.sh        （产物在 build/main.pdf）
+%  预览:  ./preview.sh      （渲染前几页成 PNG 检查排版）
+%
+%  ⚠️  除封面外，全文任何地方不得出现学校 / 姓名 / 队伍编号。
+%      定稿前务必自查：PDF 元数据、摘要页之后的页面不含身份信息。
+% =====================================================================
+
+\documentclass[bwprint,fontset=fandol]{gmcmthesis}
+%  fontset 说明：
+%    fandol  —— Linux/TeXLive 自带的开源中文字体，本机已验证可编译（推荐）
+%    windows —— 需要 SimSun/SimHei/KaiTi，只有装了 Office 字体的 Windows 能用
+%    mac     —— macOS
+
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{subfig}
+\usepackage{colortbl}
+
+% 算法环境
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithmicx,algorithm}
+\floatname{algorithm}{算法}
+\renewcommand{\algorithmicrequire}{\textbf{输入:}}
+\renewcommand{\algorithmicensure}{\textbf{输出:}}
+
+% 便捷宏
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\todo}[1]{\textcolor{red}{【待办：#1】}}
+
+% =====================================================================
+%  封面信息  ——  这些内容只会出现在第 1 页封面上
+% =====================================================================
+\title{论文题目（三号黑体，居中）}
+\baominghao{26XXXXXXXXX}   % 参赛队号（11 位，以平台公布为准）
+\schoolname{XX大学}        % 学校名称
+\membera{队员一}           % 队员 A
+\memberb{队员二}           % 队员 B
+\memberc{队员三}           % 队员 C
+
+\begin{document}
+
+% ---------- 第 1 页：封面（不可删除，4 个 logo 不可替换） ----------
+\maketitle
+
+% ---------- 第 2 页起：摘要页（题目 + 摘要 + 关键词，≤2 页） ----------
+\input{摘要}
+
+\pagestyle{plain}
+
+% 目录：官方模板没有目录页，是否加自行决定
+%\maketoc
+
+% ---------- 正文 ----------
+\input{sections/01_问题重述}
+\input{sections/02_问题分析}
+\input{sections/03_模型假设}
+\input{sections/04_符号说明}
+\input{sections/05_模型建立与求解}
+\input{sections/06_模型检验与灵敏度分析}
+\input{sections/07_模型评价与推广}
+
+% ---------- 参考文献 ----------
+%  附件2 规定的是「中文式」格式，不是 GB/T 7714，也不是 IEEE：
+%     书籍  [编号] 作者，书名，出版地：出版社，起止页码，出版年。
+%     期刊  [编号] 作者，论文名，杂志名，卷期号：起止页码，出版年。
+%     网络  [编号] 作者，资源标题，网址，访问时间（年月日）。
+%  按正文中的引用次序排列；正文用 [1][3] 方括号标注；书籍必须给页码。
+%
+%  ⚠️ 自带的 gmcm.bst 输出的不是这个格式。竞赛只有 4 天，
+%     最省事也最保险的做法是直接手写下面的 thebibliography 环境，
+%     按正文首次引用的顺序编号。
+
+\begin{thebibliography}{99}
+\bibitem{ref1} 作者，书名，出版地：出版社，起止页码，出版年。
+\bibitem{ref2} 作者，论文名，杂志名，卷期号：起止页码，出版年。
+\bibitem{ref3} 作者，资源标题，\url{https://网址}，访问时间（2026年9月23日）。  % 网址用 \url{} 才能断行
+\end{thebibliography}
+
+% ---------- 附录 ----------
+\input{sections/08_附录}
+
+\end{document}

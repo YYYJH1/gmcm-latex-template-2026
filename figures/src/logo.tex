@@ -1,0 +1,22 @@
+% ============================================================
+%  figures/logo.pdf —— 第二十三届(2026) 封面四枚 logo 横条
+%  直接替换原模板的 figures/logo.pdf，gmcmthesis.cls 无需改动。
+%
+%  四枚图片原样取自官方「附件3 论文模板.doc」的 OLE Data 流，未经修改。
+%  显示尺寸取自该 .doc 的 PICF 记录(dxaGoal/dyaGoal × mx/my)：
+%     CPIPC     102.46 × 65.25 pt
+%     数模会徽   78.29 × 75.30 pt
+%     HUAWEI    79.49 × 79.49 pt
+%     西安交大   68.33 × 64.52 pt   ← 官方 cropFromRight=0.7155，只取左侧圆形校徽
+%  间距沿用官方模板 PDF 实测的 9.00 / 15.75 / 18.10 pt；四枚底边对齐。
+%
+%  编译：xelatex logo.tex
+% ============================================================
+\documentclass[border=0pt]{standalone}
+\usepackage{graphicx}
+\begin{document}%
+\includegraphics[width=102.46pt,height=65.25pt]{01_cpipc.png}\hspace{9.00pt}%
+\includegraphics[width=78.29pt,height=75.30pt]{02_gmcm.png}\hspace{15.75pt}%
+\includegraphics[width=79.49pt,height=79.49pt]{04_huawei.jpg}\hspace{18.10pt}%
+\includegraphics[width=68.33pt,height=64.52pt]{03_xjtu_crest.png}%
+\end{document}

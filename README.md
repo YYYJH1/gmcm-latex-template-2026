@@ -1,78 +1,35 @@
+# GMCMthesis-2026
 
-## 全国研究生数学建模竞赛 LaTeX 论文模板
+“华为杯”第二十三届中国研究生数学建模竞赛（2026）LaTeX 论文模板。**非官方**。
 
-GMCMthesis 是为全国研究生数学建模竞赛编写的 LaTeX 模板, 旨在让大家专注于
-论文的内容写作, 而不用花费过多精力在格式的定制和调整上. 本手册是相应的参考, 其
-中提供了一些环境和命令可以让模板的使用更为方便. 同时需要注意, 使用者需要有一
-定的 LaTeX 的使用经验, 至少要会使用 ctex 宏包的一些功能, 比如调节字距或修改字体
-大小等等.
+> 本模板按 2026 年官方 Word 论文模板（附件3）逐项标定了封面和摘要页。竞赛格式要求以当年官方通知及附件为准，
+> 提交前请自行对照检查。
 
-2019 年大学生建模模板的免费视频教程发布了，两个模板比较一脉相承，有兴趣用户可以观瞻观瞻：
+## 来源与致谢
 
-第一部分：
-[https://www.bilibili.com/video/av64191560](https://www.bilibili.com/video/av64191560)
+本模板基于 [latexstudio/GMCMthesis](https://github.com/latexstudio/GMCMthesis)（v2.4，已合并
+[andy123t/GMCMthesis](https://github.com/andy123t/GMCMthesis) 的更新）修改而来，适配第二十三届的格式。
 
-第二部分：
-[https://www.bilibili.com/video/av64221508](https://www.bilibili.com/video/av64221508)
+- `gmcmthesis.cls`：原作者 latexstudio.net，andy123t 更新；字体自适应代码来自
+  [OsbertWang/GMCMthesis](https://github.com/OsbertWang/GMCMthesis)。
+- `gmcm.bst`：Zeping Lee 编写，按 [LPPL 1.3c](https://www.latex-project.org/lppl.txt) 发布，原样保留。
+- 封面四枚 logo 取自竞赛官方 2026 年论文模板，版权归各自所有者，仅供参赛论文排版使用。
 
-另外, 欢迎大家购买我们的视频教程, 参看[这里](https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-3473795048.2.ZlPoPL&id=43823508044). 
+## 快速开始
 
-视频教程试看的话，请点击：[试看地址](http://v.xue.taobao.com/learn.htm?spm=2013.1.0.0.kx3j3X&courseId=26740).
+需要 TeX Live（xelatex、latexmk、ctex）。预览脚本另需 PyMuPDF（`pip install pymupdf`）。
 
-![](https://github.com/latexstudio/GMCMthesis/blob/master/example_1.png)
+```bash
+./build.sh        # 编译 → build/main.pdf
+./build.sh -c     # 清理后完整重建
+./preview.sh 3    # 把前 3 页渲染成 PNG 检查排版
+```
 
-![](https://github.com/latexstudio/GMCMthesis/blob/master/example_2.png)
+封面信息（题目、参赛队号、学校、队员）在 `main.tex` 开头填写，只会出现在第 1 页。
+默认 `fontset=fandol`（TeX Live 自带的开源字体），在 Linux/macOS/Windows 上都能编译；
+装有 Windows 中文字体时可改为 `fontset=windows`。
 
-## 更新记录
+## 许可说明
 
-2024 年 9 月 17 日更新：
-
-1，更新封面格式；
-
-2，合并 https://github.com/andy123t/GMCMthesis 更新. 修复首页页码；
-
-3，调整摘要、标题、关键词和浮动体标题等字体。
-
-2023 年 9 月 19 日 更新：
-
-1，更新封面格式.
- 
-
-2020 年 9 月 9 日 更新：
-
-1，更新封面格式；
-
-2，更新了内容的部分小细节和字体选择异常。
-
-
-2019 年 9 月 14 日更新：
-
-1，修改封面格式，由于阴影效果进行截图插图。
-
-2，调整了第一页第二页的版式。
-
-3，重新设置了全文边距，与 word 模板保持一致。
-
-
-
-2018年9月11日更新：
-
-1，修改封面格式，由于阴影效果进行截图插图。
-
-2，修改了参考文献的bibtex支持。
-
-3，其他冗余代码的删除和清理。
-
-2017年9月13日更新说明：
-
-1. 去掉正文的页眉信息。
-
-2017年9月12日更新说明：
-
-1. 更新了封面的logo和页眉的版式；
-
-1. 请大家使用TeXLive 2017 进行编译，下载地址：http://www.latexstudio.net 首页焦点图；
-
-2. 遇到问题可以到91940767群进行交流。
-
- 
+上游仓库没有附带许可证文件，原作者编写的部分版权归原作者所有；`gmcm.bst` 按 LPPL 1.3c 发布。
+本仓库的改动与上游一样公开，供参赛者免费使用。
